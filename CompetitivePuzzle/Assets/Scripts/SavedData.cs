@@ -9,6 +9,7 @@ public class SavedData : MonoBehaviour
 
     void Awake()
     {
+        //if(SceneManager.GetActiveScene().name == "MainMenu")
         DontDestroyOnLoad(gameObject);
     }
 

@@ -121,7 +121,7 @@ public class MainMenuHandler : MonoBehaviour
                 
                 break;
             case false:
-                //sceneChanger.SceneLoad("");
+                sceneChanger.SceneLoad("SinglePlayerSudoku");
                 break;
         }
     }
