@@ -6,14 +6,19 @@ using Random = System.Random;
 
 public class SudokuGenerator : MonoBehaviour
 {
+    public int[] finishedGrid = new int[81];
+    public int[] missingGrid = new int[81];
+
     public int[,] sudokuMatrix = new int[9,9];
     public int missingDigits;
     List<int> sudokuNums = new List<int>();
     public Text sudokuGrid;
     System.Random random = new System.Random();
+    public SinglePlayerSudokuHandler spsHandler;
 
     void Start()
     {
+        spsHandler = GetComponent<SinglePlayerSudokuHandler>();
         missingDigits = 60;
         for (int i = 1; i < 10; i++)
         {
@@ -22,8 +27,7 @@ public class SudokuGenerator : MonoBehaviour
         FillBoxes();
         SortNumbers();
         EraseNumbers(missingDigits);
-
-        PrintSudoku();
+        spsHandler.StartHandler();
     }
 
     void FillBoxes()
@@ -292,6 +296,7 @@ public class SudokuGenerator : MonoBehaviour
                 gridNum++;
             }
         }
+        finishedGrid = grid;
     }
 
     void EraseNumbers(int wantedOut)
@@ -319,6 +324,7 @@ public class SudokuGenerator : MonoBehaviour
 
             indexes.RemoveAt(num);
         }
+        missingGrid = grid;
 
         gridNum = 0;
         for (int i = 0; i < 9; i++)
@@ -335,24 +341,5 @@ public class SudokuGenerator : MonoBehaviour
     {
         int k = random.Next(num);
         return k;
-    }
-
-    public void PrintSudoku()
-    {
-        for (int i = 0; i<9; i++)
-        {
-            for (int j = 0; j<9; j++)
-            {
-                if (sudokuMatrix[i,j] == 0)
-                {
-                    sudokuGrid.text += "   ";
-                }
-                else
-                {
-                    sudokuGrid.text += sudokuMatrix[i, j] + "  ";
-                }
-            }
-            sudokuGrid.text += "\n";
-        }
     }
 }
