@@ -6,11 +6,24 @@ public class SavedData : MonoBehaviour
 {
     public int difficulty;
     public int timer;
+    public int appColor;
+    public int appMusic;
+    public string playerName;
+
+    private static SavedData savedDataInstance;
 
     void Awake()
     {
-        //if(SceneManager.GetActiveScene().name == "MainMenu")
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
+
+        if (savedDataInstance == null)
+        {
+            savedDataInstance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
 

@@ -16,10 +16,24 @@ public class SudokuGenerator : MonoBehaviour
     System.Random random = new System.Random();
     public SinglePlayerSudokuHandler spsHandler;
 
+    public SavedData savedData;
+
     void Start()
     {
+        savedData = GameObject.Find("SavedData").GetComponent<SavedData>();
         spsHandler = GetComponent<SinglePlayerSudokuHandler>();
-        missingDigits = 60;
+        switch (savedData.difficulty)
+        {
+            case 0:
+                missingDigits = 30;
+                break;
+            case 1:
+                missingDigits = 45;
+                break;
+            default:
+                missingDigits = 60;
+                break;
+        }
         for (int i = 1; i < 10; i++)
         {
             sudokuNums.Add(i);

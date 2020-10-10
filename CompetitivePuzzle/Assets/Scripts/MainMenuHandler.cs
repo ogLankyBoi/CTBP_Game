@@ -7,6 +7,8 @@ public class MainMenuHandler : MonoBehaviour
 {
     public Slider difficultySlider;
     public Slider timerSlider;
+    public Slider colorSlider;
+    public Slider musicSlider;
 
     public Text difficultyText;
     public string[] difficultyTextArray = { "Easy", "Normal", "Hard" };
@@ -23,14 +25,25 @@ public class MainMenuHandler : MonoBehaviour
     public Toggle multiplayerToggle;
     public Toggle multiplayerToggleToggle;
 
-    public InputField nameInput;
-    public TouchScreenKeyboard keyboard;
+    public GameObject pickNameInput;
+    public GameObject setNameInput;
+    public string playerName;
 
     public Text playButtonText;
     public string[] playButtonTextArray = { "Play Game", "Find Game" };
 
     public SceneChanger sceneChanger;
     public SavedData savedData;
+    public Camera mainCamera;
+
+    public GameObject settingsScreen;
+    public GameObject settingsBackground;
+    public GameObject beginningScreen;
+    public GameObject beginningBackground;
+
+    public Color lightBlue;
+    public Color lightPink;
+    public Color lightGreen;
 
     void Start()
     {
@@ -39,16 +52,34 @@ public class MainMenuHandler : MonoBehaviour
         nonogramToggleToggle = nonogramToggle.GetComponent<Toggle>();
         multiplayerToggleToggle = multiplayerToggle.GetComponent<Toggle>();
 
+        settingsScreen = GameObject.Find("SettingsScreen");
+        settingsBackground = GameObject.Find("SettingsPopUp");
+        beginningScreen = GameObject.Find("PopUpScreen");
+        beginningBackground = GameObject.Find("BeginningPopUp");
+        settingsScreen.SetActive(false);
+        
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         sceneChanger = GetComponent<SceneChanger>();
         savedData = GameObject.Find("SavedData").GetComponent<SavedData>();
+
+        playerName = savedData.playerName;
+        if (playerName.Length == 0)
+        {
+            beginningScreen.SetActive(true);
+        }
+        else
+        {
+            beginningScreen.SetActive(false);
+        }
+
+        difficultySlider.value = savedData.difficulty;
+        timerSlider.value = savedData.timer;
+        colorSlider.value = savedData.appColor;
     }
 
     void Update()
     {
-        /*if(nameInput.isFocused == true && keyboard.active == false)
-        {
-            keyboard.active = true;
-        }*/
+        
     }
 
     public void DiffSliderChanged()
@@ -114,15 +145,70 @@ public class MainMenuHandler : MonoBehaviour
     {
         savedData.difficulty = (int)difficultySlider.value;
         savedData.timer = (int)timerSlider.value;
+        savedData.appColor = (int)colorSlider.value;
+        savedData.appMusic = (int)musicSlider.value;
 
         switch (multiplayerToggleToggle.isOn)
         {
             case true:
-                
+                FindGame();
                 break;
             case false:
                 sceneChanger.SceneLoad("SinglePlayerSudoku");
                 break;
         }
+    }
+
+    public void FindGame()
+    {
+
+    }
+
+    public void OnBeginningDoneButton()
+    {
+        playerName = pickNameInput.GetComponent<Text>().text;
+        savedData.playerName = playerName;
+        setNameInput.GetComponent<Text>().text = playerName;
+        beginningScreen.SetActive(false);
+    }
+
+    public void OnSettingsButton()
+    {
+        settingsScreen.SetActive(true);
+        setNameInput.GetComponent<Text>().text = playerName;
+    }
+
+    public void OnColorSlider()
+    {
+        if (colorSlider.value == 0)
+        {
+            mainCamera.backgroundColor = lightBlue;
+            settingsBackground.GetComponent<Image>().color = lightBlue;
+            beginningBackground.GetComponent<Image>().color = lightBlue;
+        }
+        else if (colorSlider.value == 1)
+        {
+            mainCamera.backgroundColor = lightPink;
+            settingsBackground.GetComponent<Image>().color = lightPink;
+            beginningBackground.GetComponent<Image>().color = lightPink;
+        }
+        else
+        {
+            mainCamera.backgroundColor = lightGreen;
+            beginningBackground.GetComponent<Image>().color = lightGreen;
+            settingsBackground.GetComponent<Image>().color = lightGreen;
+        }
+    }
+
+    public void OnSetButton()
+    {
+        playerName = setNameInput.GetComponent<Text>().text;
+        setNameInput.GetComponent<Text>().text = playerName;
+        savedData.playerName = playerName;
+    }
+
+    public void OnExitSettingsButton()
+    {
+        settingsScreen.SetActive(false);
     }
 }
